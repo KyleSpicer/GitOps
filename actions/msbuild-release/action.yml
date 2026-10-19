@@ -34,7 +34,6 @@ runs:
       shell: powershell
       working-directory: ${{ inputs.working-directory }}
       env:
-        MSBUILD: ${{ steps.locate.outputs.msbuild-path }}
         PROJECT: ${{ inputs.project }}
         CONFIGURATION: ${{ inputs.configuration }}
         PLATFORM: ${{ inputs.platform }}

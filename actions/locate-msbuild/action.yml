@@ -21,5 +21,10 @@ runs:
           -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
 
         if (-not $msbuild) { throw "MSBuild.exe not found via vswhere" }
+        
         Write-Host "Using MSBuild: $msbuild"
         "msbuild-path=$msbuild" >> $env:GITHUB_OUTPUT
+
+        Write-Host "Using MSBuild: $msbuild"
+        "msbuild-path=$msbuild" >> $env:GITHUB_OUTPUT
+        "MSBUILD=$msbuild" >> $env:GITHUB_ENV
