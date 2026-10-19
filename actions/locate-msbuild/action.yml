@@ -21,9 +21,10 @@ runs:
           -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
 
         if (-not $msbuild) { throw "MSBuild.exe not found via vswhere" }
-        
-        Write-Host "Using MSBuild: $msbuild"
-        "msbuild-path=$msbuild" >> $env:GITHUB_OUTPUT
+
+        # Prefer the 64-bit MSBuild to avoid WOW64 path redirection
+        $amd64 = Join-Path (Split-Path $msbuild -Parent) 'amd64\MSBuild.exe'
+        if (Test-Path $amd64) { $msbuild = $amd64 }
 
         Write-Host "Using MSBuild: $msbuild"
         "msbuild-path=$msbuild" >> $env:GITHUB_OUTPUT
