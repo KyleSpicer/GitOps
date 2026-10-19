@@ -1,0 +1,52 @@
+name: msbuild-release
+description: Builds Visual Studio solution/project using msbuild
+
+inputs:
+  project:
+    description: Path to the .sln, .slnx, or .vcxproj, relative to working directory
+    required: true
+  configuration:
+    description: Build configuration (Debug, Release)
+    default: release
+  platform:
+    description: Build platform (x64, x86, Win32)
+    default: x64
+  working-directory:
+    description: Directory to run the build from
+    default: "."
+  extra-args:
+    description: Extra MSBuild arguments, space separated
+    default: ""
+
+outputs:
+  msbuild-path:
+    description: Resolved path to MSBuild.exe
+    value: ${{ steps.locate.outputs.msbuild-path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Locate MSBuild
+      id: msbuild
+      uses: 
+        
+    - name: Build
+      shell: powershell
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        MSBUILD: ${{ steps.locate.outputs.msbuild-path }}
+        PROJECT: ${{ inputs.project }}
+        CONFIGURATION: ${{ inputs.configuration }}
+        PLATFORM: ${{ inputs.platform }}
+        EXTRA_ARGS: ${{ inputs.extra-args }}
+      run: |
+        $extra = @($env:EXTRA_ARGS -split '\s+' | Where-Object { $_ })
+
+        & $env:MSBUILD $env:PROJECT `
+          /m /nologo /restore `
+          "/p:Configuration=$env:CONFIGURATION" `
+          "/p:Platform=$env:PLATFORM" `
+          @extra
+
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    

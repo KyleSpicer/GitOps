@@ -1,0 +1,25 @@
+name: locate-msbuild
+description: Find the newest MSBuild.exe on the runner using vswhere
+
+outputs:
+  msbuild-path:
+    description: Resolved path to MSBuild.exe
+    value: ${{ steps.locate.outputs.msbuild-path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Locate MSBuild
+      id: locate
+      shell: powershell
+      run: |
+        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+        if (-not (Test-Path $vswhere)) { throw "vswhere.exe not found at $vswhere" }
+
+        $msbuild = & $vswhere -latest -products * `
+          -requires Microsoft.Component.MSBuild `
+          -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
+
+        if (-not $msbuild) { throw "MSBuild.exe not found via vswhere" }
+        Write-Host "Using MSBuild: $msbuild"
+        "msbuild-path=$msbuild" >> $env:GITHUB_OUTPUT
