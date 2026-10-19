@@ -7,7 +7,7 @@ inputs:
     required: true
   configuration:
     description: Build configuration (Debug, Release)
-    default: release
+    default: Release
   platform:
     description: Build platform (x64, x86, Win32)
     default: x64
@@ -21,15 +21,15 @@ inputs:
 outputs:
   msbuild-path:
     description: Resolved path to MSBuild.exe
-    value: ${{ steps.locate.outputs.msbuild-path }}
+    value: ${{ steps.msbuild.outputs.msbuild-path }}
 
 runs:
   using: composite
   steps:
     - name: Locate MSBuild
       id: msbuild
-      uses: https://gitea.com/Kyle-Spicer/GitOps/actions/locate-msbuild@main 
-        
+      uses: https://gitea.com/Kyle-Spicer/GitOps/actions/locate-msbuild@main
+
     - name: Build
       shell: powershell
       working-directory: ${{ inputs.working-directory }}
@@ -39,21 +39,18 @@ runs:
         PLATFORM: ${{ inputs.platform }}
         EXTRA_ARGS: ${{ inputs.extra-args }}
       run: |
-        # Diagnostics (remove once the build is working)
-        Write-Host "PWD: $(Get-Location)"
-        Write-Host "PROJECT: $env:PROJECT"
-        Write-Host "Exists: $(Test-Path $env:PROJECT)"
-        Get-ChildItem | Select-Object -ExpandProperty Name
-
         if (-not $env:MSBUILD) { throw "MSBUILD path was not set by locate-msbuild" }
+
+        # Resolve to a full absolute path with backslashes
+        $project = (Resolve-Path -LiteralPath $env:PROJECT -ErrorAction Stop).ProviderPath
+        Write-Host "Building: $project"
 
         $extra = @($env:EXTRA_ARGS -split '\s+' | Where-Object { $_ })
 
-        & $env:MSBUILD $env:PROJECT `
+        & $env:MSBUILD $project `
           /m /nologo /restore `
           "/p:Configuration=$env:CONFIGURATION" `
           "/p:Platform=$env:PLATFORM" `
           @extra
 
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    
