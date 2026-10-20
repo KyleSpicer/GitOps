@@ -1,0 +1,41 @@
+name: upload-build
+description: Uploads build output as a workflow artifact using actions/upload-artifact
+
+inputs:
+  name:
+    description: Artifact name, unique within the workflow run
+    required: true
+  path:
+    description: File, folder, or glob to upload, relative to the repo root (use / separators)
+    required: true
+  retention-days:
+    description: Days to keep the artifact on Gitea
+    default: "7"
+
+outputs:
+  artifact-id:
+    description: ID of the uploaded artifact
+    value: ${{ steps.upload.outputs.artifact-id }}
+
+runs:
+  using: composite
+  steps:
+    - name: Check build output
+      shell: powershell
+      env:
+        ARTIFACT_PATH: ${{ inputs.path }}
+      run: |
+        # Fail early with the full path, instead of a generic upload error
+        $fullPath = Join-Path (Get-Location) $env:ARTIFACT_PATH
+        if (-not (Test-Path -Path $fullPath)) { throw "Build output not found: $fullPath" }
+
+        Get-Item -Path $fullPath | ForEach-Object { Write-Host "Uploading: $($_.FullName)" }
+
+    - name: Upload artifact
+      id: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        retention-days: ${{ inputs.retention-days }}
+        if-no-files-found: error
