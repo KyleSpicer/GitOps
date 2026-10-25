@@ -11,13 +11,23 @@ Pinning to `@main` means a push to this repository changes the action for
 every workflow that uses it, immediately. Pin to a tag or commit SHA instead
 if you need a workflow to stay fixed.
 
+## Contents
+
+- [Available actions](#available-actions) — overview table
+- [locate-msbuild](#locate-msbuild) — find `MSBuild.exe`
+- [msbuild-release](#msbuild-release) — build a VS solution or project
+- [upload-build](#upload-build) — upload an artifact
+
 ## Available actions
+
+Each row links to that action's section below; the section heading links to
+its source `action.yml`.
 
 | Action | Purpose | Runner OS |
 |---|---|---|
-| [`locate-msbuild`](actions/locate-msbuild/action.yml) | Find the newest `MSBuild.exe` via `vswhere` | Windows |
-| [`msbuild-release`](actions/msbuild-release/action.yml) | Build a Visual Studio solution or project | Windows |
-| [`upload-build`](actions/upload-build/action.yml) | Upload build output as a workflow artifact | Any |
+| [`locate-msbuild`](#locate-msbuild) | Find the newest `MSBuild.exe` via `vswhere` | Windows |
+| [`msbuild-release`](#msbuild-release) | Build a Visual Studio solution or project | Windows |
+| [`upload-build`](#upload-build) | Upload build output as a workflow artifact | Any |
 
 ### [locate-msbuild](actions/locate-msbuild/action.yml)
 
