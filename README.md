@@ -13,10 +13,10 @@ if you need a workflow to stay fixed.
 
 ## Contents
 
-- [Available actions](#available-actions) — overview table
-- [locate-msbuild](#locate-msbuild) — find `MSBuild.exe`
-- [msbuild-release](#msbuild-release) — build a VS solution or project
-- [upload-build](#upload-build) — upload an artifact
+- [Available actions](#available-actions) - overview table
+- [locate-msbuild](#locate-msbuild) - find `MSBuild.exe`
+- [msbuild-release](#msbuild-release) - build a VS solution or project
+- [upload-build](#upload-build) - upload an artifact
 
 ## Available actions
 
@@ -35,7 +35,7 @@ Resolves the path to the newest `MSBuild.exe` on the runner using `vswhere`,
 preferring the 64-bit build to avoid WOW64 path redirection. `msbuild-release`
 calls this itself, so you only need it directly to run MSBuild your own way.
 
-**Outputs:** `msbuild-path` — the resolved path. Also exported as the
+**Outputs:** `msbuild-path` - the resolved path. Also exported as the
 `MSBUILD` environment variable for later steps.
 
 Windows only: uses PowerShell and `vswhere`.
@@ -60,7 +60,7 @@ MSBuild via `locate-msbuild` first.
 | `working-directory` | no | `.` | Directory to build from |
 | `extra-args` | no | `""` | Extra MSBuild arguments, space separated |
 
-**Outputs:** `msbuild-path` — the MSBuild used.
+**Outputs:** `msbuild-path` - the MSBuild used.
 
 Windows only: uses PowerShell and MSBuild.
 
@@ -84,7 +84,7 @@ fails the step.
 | `path` | yes | | Files, folders, or globs, one per line, relative to the repo root. `!` prefix excludes |
 | `retention-days` | no | `7` | Days to keep the artifact on Gitea |
 
-**Outputs:** `artifact-id` — the uploaded artifact's ID.
+**Outputs:** `artifact-id` - the uploaded artifact's ID.
 
 Runs on any runner OS (no shell steps). Needs Node.js on the runner, which
 `actions/upload-artifact` requires.
