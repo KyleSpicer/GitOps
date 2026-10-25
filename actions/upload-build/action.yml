@@ -6,7 +6,10 @@ inputs:
     description: Artifact name, unique within the workflow run
     required: true
   path:
-    description: File, folder, or glob to upload, relative to the repo root (use / separators)
+    description: >-
+      Files, folders, or globs to upload, one per line, relative to the repo
+      root (use / separators). Any file type. Prefix a line with ! to exclude
+      matches, e.g. !**/*.pdb
     required: true
   retention-days:
     description: Days to keep the artifact on Gitea
@@ -17,20 +20,11 @@ outputs:
     description: ID of the uploaded artifact
     value: ${{ steps.upload.outputs.artifact-id }}
 
+# No shell steps, so this runs on any runner OS. A path that matches nothing
+# fails the upload itself (if-no-files-found: error), naming the path.
 runs:
   using: composite
   steps:
-    - name: Check build output
-      shell: powershell
-      env:
-        ARTIFACT_PATH: ${{ inputs.path }}
-      run: |
-        # Fail early with the full path, instead of a generic upload error
-        $fullPath = Join-Path (Get-Location) $env:ARTIFACT_PATH
-        if (-not (Test-Path -Path $fullPath)) { throw "Build output not found: $fullPath" }
-
-        Get-Item -Path $fullPath | ForEach-Object { Write-Host "Uploading: $($_.FullName)" }
-
     - name: Upload artifact
       id: upload
       uses: actions/upload-artifact@v4
