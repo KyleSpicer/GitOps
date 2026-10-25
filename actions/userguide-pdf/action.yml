@@ -1,0 +1,64 @@
+name: userguide-pdf
+description: Renders Docs/userguide.md (or docs/userguide.md) to a PDF and uploads it as an artifact
+
+inputs:
+  name:
+    description: Artifact name, unique within the workflow run
+    default: userguide
+  output:
+    description: Path of the PDF to write, relative to the repo root (use / separators)
+    default: userguide.pdf
+  guide:
+    description: Guide to render, relative to the repo root. Empty searches Docs/userguide.md, then docs/userguide.md
+    default: ""
+  paper-size:
+    description: Page size, such as Letter or A4
+    default: Letter
+  upload:
+    description: Upload the PDF as an artifact. Set to "false" to only render it, for example to attach it to a release
+    default: "true"
+  retention-days:
+    description: Days to keep the artifact on Gitea
+    default: "7"
+
+outputs:
+  pdf-path:
+    description: Absolute path of the rendered PDF
+    value: ${{ steps.windows.outputs.pdf-path || steps.unix.outputs.pdf-path }}
+
+# The work is all in render_userguide.py, which installs its own pinned
+# renderer into a private virtual environment. The two steps below differ only
+# in how they find Python: python on Windows, python3 elsewhere. Inputs go in
+# through the environment, so no shell has to quote them.
+runs:
+  using: composite
+  steps:
+    - name: Render user guide (Windows)
+      id: windows
+      if: runner.os == 'Windows'
+      shell: powershell
+      env:
+        USERGUIDE_GUIDE: ${{ inputs.guide }}
+        USERGUIDE_OUTPUT: ${{ inputs.output }}
+        USERGUIDE_PAPER_SIZE: ${{ inputs.paper-size }}
+      run: |
+        python "${{ github.action_path }}/render_userguide.py"
+        exit $LASTEXITCODE
+
+    - name: Render user guide (Linux, macOS)
+      id: unix
+      if: runner.os != 'Windows'
+      shell: sh
+      env:
+        USERGUIDE_GUIDE: ${{ inputs.guide }}
+        USERGUIDE_OUTPUT: ${{ inputs.output }}
+        USERGUIDE_PAPER_SIZE: ${{ inputs.paper-size }}
+      run: python3 "${{ github.action_path }}/render_userguide.py"
+
+    - name: Upload user guide
+      if: inputs.upload == 'true'
+      uses: https://gitea.com/Kyle-Spicer/GitOps/actions/upload-build@main
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.output }}
+        retention-days: ${{ inputs.retention-days }}
