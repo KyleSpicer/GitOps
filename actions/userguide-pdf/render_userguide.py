@@ -44,6 +44,8 @@ GUIDE_CANDIDATES = ["Docs/userguide.md", "docs/userguide.md"]
 #: Markdown images and HTML <img> tags; the captured group is the source.
 IMAGE_PATTERN = re.compile(r"!\[[^\]]*\]\(([^)\s]+)[^)]*\)|<img[^>]*\bsrc=\"([^\"]+)\"")
 
+#: No background-color anywhere: PyMuPDF's layout engine paints stray copies
+#: of background fills elsewhere on the page. Borders render correctly.
 STYLESHEET = """
 body { font-family: sans-serif; font-size: 11pt; line-height: 1.4; }
 h1 { font-size: 22pt; }
@@ -51,9 +53,8 @@ h2 { font-size: 16pt; margin-top: 18pt; }
 h3 { font-size: 13pt; }
 table { border-collapse: collapse; margin: 6pt 0; }
 th, td { border: 1px solid #999999; padding: 3pt 6pt; text-align: left; }
-th { background-color: #eeeeee; }
 pre, code { font-family: monospace; font-size: 9pt; }
-pre { background-color: #f4f4f4; padding: 6pt; }
+pre { border: 1px solid #cccccc; padding: 6pt; }
 """
 
 
