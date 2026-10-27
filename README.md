@@ -1,10 +1,10 @@
 # GitOps
 
-Shared Gitea Actions used across Kyle-Spicer's projects. Each is a composite
+Shared GitHub Actions used across KyleSpicer's projects. Each is a composite
 action; reference one from a workflow by its path on `main`:
 
 ```yaml
-uses: https://gitea.com/Kyle-Spicer/GitOps/actions/<name>@main
+uses: KyleSpicer/GitOps/actions/<name>@main
 ```
 
 Pinning to `@main` means a push to this repository changes the action for
@@ -44,7 +44,7 @@ Windows only: uses PowerShell and `vswhere`.
 
 ```yaml
 - id: msbuild
-  uses: https://gitea.com/Kyle-Spicer/GitOps/actions/locate-msbuild@main
+  uses: KyleSpicer/GitOps/actions/locate-msbuild@main
 - shell: powershell
   run: & "${{ steps.msbuild.outputs.msbuild-path }}" MyApp.sln /p:Configuration=Release
 ```
@@ -67,7 +67,7 @@ MSBuild via `locate-msbuild` first.
 Windows only: uses PowerShell and MSBuild.
 
 ```yaml
-- uses: https://gitea.com/Kyle-Spicer/GitOps/actions/msbuild-release@main
+- uses: KyleSpicer/GitOps/actions/msbuild-release@main
   with:
     project: MyApp/MyApp.slnx
     configuration: Release
@@ -84,7 +84,7 @@ fails the step.
 |---|---|---|---|
 | `name` | yes | | Artifact name, unique within the workflow run |
 | `path` | yes | | Files, folders, or globs, one per line, relative to the repo root. `!` prefix excludes |
-| `retention-days` | no | `7` | Days to keep the artifact on Gitea |
+| `retention-days` | no | `7` | Days to keep the artifact |
 
 **Outputs:** `artifact-id` - the uploaded artifact's ID.
 
@@ -92,7 +92,7 @@ Runs on any runner OS (no shell steps). Needs Node.js on the runner, which
 `actions/upload-artifact` requires.
 
 ```yaml
-- uses: https://gitea.com/Kyle-Spicer/GitOps/actions/upload-build@main
+- uses: KyleSpicer/GitOps/actions/upload-build@main
   with:
     name: myapp-windows-x64
     path: |
@@ -101,9 +101,9 @@ Runs on any runner OS (no shell steps). Needs Node.js on the runner, which
       !**/*.pdb
 ```
 
-Artifacts expire (the Gitea server sets the maximum; `retention-days` can
-only shorten it). For downloads that should never expire, attach the files
-to a Gitea Release instead.
+Artifacts expire (the repository's retention setting sets the maximum;
+`retention-days` can only shorten it). For downloads that should never
+expire, attach the files to a GitHub Release instead.
 
 ### [userguide-pdf](actions/userguide-pdf/action.yml)
 
@@ -120,7 +120,7 @@ table of contents, become working links and PDF bookmarks.
 | `guide` | no | `""` | Guide to render instead of searching `Docs/` and `docs/` |
 | `paper-size` | no | `Letter` | Page size, such as `Letter` or `A4` |
 | `upload` | no | `"true"` | `"false"` renders only, for example to attach the PDF to a release |
-| `retention-days` | no | `7` | Days to keep the artifact on Gitea |
+| `retention-days` | no | `7` | Days to keep the artifact |
 
 **Outputs:** `pdf-path` - absolute path of the rendered PDF.
 
@@ -133,5 +133,5 @@ Python, which lacks pip, works too.
 
 ```yaml
 - uses: actions/checkout@v4
-- uses: https://gitea.com/Kyle-Spicer/GitOps/actions/userguide-pdf@main
+- uses: KyleSpicer/GitOps/actions/userguide-pdf@main
 ```

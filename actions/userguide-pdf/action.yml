@@ -18,7 +18,7 @@ inputs:
     description: Upload the PDF as an artifact. Set to "false" to only render it, for example to attach it to a release
     default: "true"
   retention-days:
-    description: Days to keep the artifact on Gitea
+    description: Days to keep the artifact
     default: "7"
 
 outputs:
@@ -57,7 +57,7 @@ runs:
 
     - name: Upload user guide
       if: inputs.upload == 'true'
-      uses: https://gitea.com/Kyle-Spicer/GitOps/actions/upload-build@main
+      uses: KyleSpicer/GitOps/actions/upload-build@main
       with:
         name: ${{ inputs.name }}
         path: ${{ inputs.output }}

@@ -28,7 +28,7 @@ runs:
   steps:
     - name: Locate MSBuild
       id: msbuild
-      uses: https://gitea.com/Kyle-Spicer/GitOps/actions/locate-msbuild@main
+      uses: KyleSpicer/GitOps/actions/locate-msbuild@main
 
     - name: Build
       shell: powershell

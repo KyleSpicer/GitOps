@@ -155,11 +155,11 @@ def _check_images(guide: pathlib.Path, text: str) -> None:
 
 
 def _slug(heading: str) -> str:
-    """Makes a GitHub/Gitea-style anchor from a heading's text.
+    """Makes a GitHub-style anchor from a heading's text.
 
     Lowercase, punctuation dropped, spaces to hyphens, so the guide's own
     ``[...](#getting-started)`` links resolve in the PDF the same way they do
-    when Gitea renders the Markdown.
+    when GitHub renders the Markdown.
     """
     return re.sub(r"[^\w\- ]", "", heading.lower()).replace(" ", "-")
 
