@@ -77,7 +77,7 @@ Windows only: uses PowerShell and MSBuild.
 ### [upload-build](actions/upload-build/action.yml)
 
 Uploads files, folders, or globs as a workflow artifact, wrapping
-`actions/upload-artifact@v4`. Any file type. A path that matches nothing
+`actions/upload-artifact@v7`. Any file type. A path that matches nothing
 fails the step.
 
 | Input | Required | Default | Description |
@@ -88,8 +88,8 @@ fails the step.
 
 **Outputs:** `artifact-id` - the uploaded artifact's ID.
 
-Runs on any runner OS (no shell steps). Needs Node.js on the runner, which
-`actions/upload-artifact` requires.
+Runs on any runner OS (no shell steps). `actions/upload-artifact` runs on
+the Node.js bundled with the GitHub runner, so nothing extra is needed.
 
 ```yaml
 - uses: KyleSpicer/GitOps/actions/upload-build@main
@@ -132,6 +132,6 @@ that; the runner's own Python is never changed. A stock Debian or Ubuntu
 Python, which lacks pip, works too.
 
 ```yaml
-- uses: actions/checkout@v4
+- uses: actions/checkout@v7
 - uses: KyleSpicer/GitOps/actions/userguide-pdf@main
 ```
